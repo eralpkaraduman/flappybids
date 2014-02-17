@@ -1,6 +1,6 @@
 var game = new Phaser.Game(
-    320 * 1.2,
-    568 * 1.2,
+    320 * 1.1,
+    568 * 1.1,
     Phaser.AUTO,
     '',
     { preload: preload,
@@ -11,15 +11,14 @@ var game = new Phaser.Game(
 var marvin;
 var chart;
 var gateGroup;
-var gateHeight = 130;
+var gateHeight = 123;
 var numLines = 5;
 var gaps = game.height/(numLines+1);
 var gateOffset = gateHeight*2;
 var speed = 180;
 var ground;
-//var startOffset = game.width*2;
-var startOffset = game.width*1.5;
-var gateFrequency = game.width/4*3;
+var startOffset = game.width*1.5; 
+var gateFrequency = game.width/5*4; //game.width/4*3;
 var gatePairs = [];
 var wallColliderWidth = 5;
 var downLineGFX ;
@@ -29,13 +28,26 @@ var climbStartOffset = gateFrequency/10;
 var leftMask;
 var scoreCounter;
 var score = 0;
+var bestScore = 0;
 var justPassedWall = null;
 var passOffset = 10;
+var endGameBannerGroup;
+var endGamePullStartY = -180-1;
+var endGamePullEndY = game.height+180+1;
+var endGamePullTween;
+var endGamePullEndTween;
+var endGameCurrentScoreText;
+var endGameCurrentBestScoreText;
+var canClick = true;
 
 var startInfoText;
 
 var dead = false;
 var started = false;
+
+var sfx_jump;
+var sfx_wall;
+var sfx_gate;
 
 var root = "file://localhost/Users/eralpkaraduman/Documents/FlappyBids"; 
 
@@ -43,12 +55,24 @@ function preload() {
     game.load.image('marvin_gfx','marvin.png');
     game.load.image('click','click_flat.png');
     game.load.image('logo','logo.png');
+    game.load.image('endgame','endgame.png');
+    game.load.audio('s_wall', ['wall.mp3', 'wall.ogg']);
+    game.load.audio('s_gate', ['gate.mp3', 'gate.ogg']);
+    game.load.audio('s_jump', ['jump.mp3', 'jump.ogg']);
+
 }
 
 function create() {
 
     game.world.setBounds(0, 0, game.width*3, game.height);
     game.stage.backgroundColor = '#FCFCFC';
+
+    sfx_jump = game.add.audio('s_jump');
+    sfx_wall = game.add.audio('s_wall');
+    sfx_gate = game.add.audio('s_gate');
+
+    game.stage.scale.pageAlignHorizontally = true;
+    game.stage.scale.refresh();
 
     downLineGFX = game.add.graphics(0,0);
     upLineGFX = game.add.graphics(0,0);
@@ -61,7 +85,7 @@ function create() {
     //lines
     var i=1;
     var lineGFX = game.add.graphics(0,0);
-    lineGFX.lineStyle(1, 0xdddddd, 1);
+    lineGFX.lineStyle(2, 0xdddddd, 1);
     for(;i<=numLines;i++){
         
         lineGFX.moveTo(lineStartX,gaps*i);
@@ -121,6 +145,23 @@ function create() {
     scoreCounter.anchor.setTo(0.5,0.5);
     scoreCounter.y = 150;
 
+    endGameBannerGroup = game.add.group();
+    //endGameBannerGroup.anchor.setTo(0.5,0.5);
+    endGameBannerGroup.x = game.width/2;
+    endGameBannerGroup.y = endGamePullEndY;
+    var endGameBanner = game.add.sprite(0,0,'endgame');
+    endGameBanner.anchor.setTo(0.5,0.5);
+    endGameBannerGroup.add(endGameBanner);
+
+    var endGameScoreTextStyle = { font: "18px Arial", fill: "#00CFB5", align: "center" };
+    endGameCurrentScoreText = game.add.text(0,0,"Current bid: $0.0",endGameScoreTextStyle);
+    endGameCurrentBestScoreText = game.add.text(0,25,"Highest bid: $0.0",endGameScoreTextStyle);
+    endGameCurrentScoreText.anchor.setTo(0.5,0.5);
+    endGameCurrentBestScoreText.anchor.setTo(0.5,0.5);
+    endGameBannerGroup.add(endGameCurrentScoreText);
+    endGameBannerGroup.add(endGameCurrentBestScoreText);
+
+
     resetGame();
 
 }
@@ -169,6 +210,8 @@ function generateWalls(){
 
 function onTap(){
 
+    if(canClick==false)return;
+
     if(started==false){
         startGame();
         jump();
@@ -194,12 +237,27 @@ function resetGame(){
     setScore(0);
     scoreCounter.alpha = 0;
 
+    hideEndGame();
+
     justPassedWall = null;
 }
 
 function setScore(_score){
     score = _score;
-    scoreCounter.setText(score);
+
+    if(score>bestScore){
+        bestScore = score;
+    }
+
+    scoreCounter.setText(scoreStringFromScore(score));
+    endGameCurrentScoreText.setText("Current bid: "+scoreStringFromScore(score));
+    endGameCurrentBestScoreText.setText("Highest bid: "+scoreStringFromScore(bestScore));
+}
+
+function scoreStringFromScore(_score){
+
+    var s = _score/10;
+    return "$ "+s+(s%1==0?".0":"");
 }
 
 function resetMarvin(){
@@ -211,6 +269,7 @@ function resetMarvin(){
 
 function jump(){
     marvin.body.velocity.y = -400;
+    sfx_jump.play();
 }
 
 function startGame(){
@@ -254,6 +313,7 @@ function update () {
     if(frontPairX+passOffset<marvin.x && gatePairs[0].up != justPassedWall){
         justPassedWall = gatePairs[0].up;
         setScore(++score);
+        sfx_gate.play();
     }
 
     var i=0;
@@ -276,11 +336,11 @@ function update () {
 
     //draw lines
     downLineGFX.clear();
-    downLineGFX.lineStyle(1, 0x00cfb5, 1);
+    downLineGFX.lineStyle(2, 0x00cfb5, 1);
     downLineGFX.moveTo(-10,game.height-gaps);
 
     upLineGFX.clear();
-    upLineGFX.lineStyle(1, 0x00cfb5, 1);
+    upLineGFX.lineStyle(2, 0x00cfb5, 1);
     upLineGFX.moveTo(-10,gaps);
     
     i=0;
@@ -302,14 +362,35 @@ function update () {
     for(;i<gatePairs.length;i++){
         var pair = gatePairs[i];
         downLineGFX.beginFill(0x00cfb5);
-        downLineGFX.drawCircle(pair.down.x,pair.down.y,5);
-        downLineGFX.drawCircle(pair.up.x,pair.up.y,5);
+        downLineGFX.drawCircle(pair.down.x,pair.down.y,10);
+        downLineGFX.drawCircle(pair.up.x,pair.up.y,10);
         downLineGFX.endFill();
     }
 
+    if(marvin.y<gaps){
+        marvin.y = gaps;
+        marvin.body.velocity.y = 0;
+    }
 
-    
+}
 
+function showEndGame(){
+    canClick = false;
+    if(endGamePullEndTween)endGamePullEndTween.stop();
+    endGameBannerGroup.y =endGamePullStartY;
+    endGamePullTween = game.add.tween(endGameBannerGroup);
+    endGamePullTween.to({y:game.height/2},800,Phaser.Easing.Bounce.Out);
+    endGamePullTween.onComplete.add(function(){
+        canClick = true;
+    }, this);
+    endGamePullTween.start();
+}
+
+function hideEndGame(){
+    if(endGamePullTween)endGamePullTween.stop();
+    endGamePullEndTween = game.add.tween(endGameBannerGroup);
+    endGamePullEndTween.to({y:endGamePullEndY},300,Phaser.Easing.Bounce.Out);
+    endGamePullEndTween.start();
 }
 
 function hitWall(){
@@ -317,7 +398,9 @@ function hitWall(){
     if(dead)return;
     dead = true;
 
+    sfx_wall.play();
 
+    showEndGame();
 
     //console.log('hit');
 }
