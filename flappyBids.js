@@ -40,6 +40,10 @@ var endGameCurrentScoreText;
 var endGameCurrentBestScoreText;
 var canClick = true;
 var scoreBoardButton;
+var tryAgainButton;
+
+var currentScorePrefix = "";
+var bestScorePrefix = "Best ";
 
 var startInfoText;
 
@@ -58,6 +62,7 @@ function preload() {
     game.load.image('logo','logo.png');
     game.load.image('endgame','endgame.png');
     game.load.image('sumbit','submit.png');
+    game.load.image('tryAgain','tryAgain.png');
     game.load.audio('s_wall', ['wall.mp3', 'wall.ogg']);
     game.load.audio('s_gate', ['gate.mp3', 'gate.ogg']);
     game.load.audio('s_jump', ['jump.mp3', 'jump.ogg']);
@@ -154,8 +159,13 @@ function create() {
     endGameBannerGroup.add(endGameBanner);
 
     var endGameScoreTextStyle = { font: "18px Arial", fill: "#00CFB5", align: "center" };
-    endGameCurrentScoreText = game.add.text(0,-30,"Current: $0.0",endGameScoreTextStyle);
-    endGameCurrentBestScoreText = game.add.text(0,-5,"Highest: $0.0",endGameScoreTextStyle);
+    var currentScoreY = -50;
+
+    
+    
+
+    endGameCurrentScoreText = game.add.text(0,currentScoreY,currentScorePrefix+scoreStringFromScore(score),endGameScoreTextStyle);
+    endGameCurrentBestScoreText = game.add.text(0,currentScoreY+25,bestScorePrefix+scoreStringFromScore(bestScore),endGameScoreTextStyle);
     endGameCurrentScoreText.anchor.setTo(0.5,0.5);
     endGameCurrentBestScoreText.anchor.setTo(0.5,0.5);
     endGameBannerGroup.add(endGameCurrentScoreText);
@@ -165,8 +175,16 @@ function create() {
     scoreBoardButton.anchor.setTo(0.5,0.5);
     endGameBannerGroup.add(scoreBoardButton);
 
+    tryAgainButton = game.add.button(0, 85, 'tryAgain', onClickTryAgain, this, 0, 0, 0);
+    tryAgainButton.anchor.setTo(0.5,0.5);
+    endGameBannerGroup.add(tryAgainButton);
+
     resetGame();
 
+}
+
+function onClickTryAgain(){
+    console.log("try again");
 }
 
 function onClickScoreboard(){
@@ -257,8 +275,8 @@ function setScore(_score){
     }
 
     scoreCounter.setText(scoreStringFromScore(score));
-    endGameCurrentScoreText.setText("Current "+scoreStringFromScore(score));
-    endGameCurrentBestScoreText.setText("Highest "+scoreStringFromScore(bestScore));
+    endGameCurrentScoreText.setText(currentScorePrefix+scoreStringFromScore(score));
+    endGameCurrentBestScoreText.setText(bestScorePrefix+scoreStringFromScore(bestScore));
 }
 
 function scoreStringFromScore(_score){
