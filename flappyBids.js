@@ -1,6 +1,6 @@
 var game = new Phaser.Game(
-    320 * 1.1,
-    568 * 1.1,
+    320 * 1.0,
+    568 * 1.0,
     Phaser.AUTO,
     '',
     { preload: preload,
