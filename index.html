@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Flappy Bids!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         body {
             margin: 0;
@@ -34,11 +35,11 @@
 }
 
 .fb-btn {
-    background: #999;
+    background:#ccc url(FB_btn.png) no-repeat 0 0;
 }
 
 .tw-btn {
-    background: #888;
+    background:#ccc url(twitter_btn.png) no-repeat 0 0;
 }
 
 .btns-i {
@@ -55,6 +56,25 @@
     display: none;
 }
 
+.back-btn {
+    background:#fff url(backToGame_btn.png) no-repeat 0 0;
+    display: block;
+    height: 60px;
+    text-indent:-9999px;
+}
+
+.score-screen canvas{
+    display:none !important;
+    background-color:#545764;
+}
+
+#score {
+    padding:10px;
+    line-height:20px;
+    font-weight:bold;
+    font-size:16px;
+}
+
     </style>
 
     <script src="phaser.min.js"></script>
@@ -67,7 +87,7 @@
 	
 <script src="flappyBids.js"></script>
 <div id="scoreboard">
-<a href="index.html">Back to Game</a>
+<a class="back-btn" href="index.html">Back to Game</a>
     <div id="score"></div>
     <div class="btns">
         <div class="btns-i">
@@ -87,6 +107,8 @@ function getScore() {
         score = url.split('?s=')[1];
         document.getElementById('score').innerHTML = 'Your Score: ' + score;
         document.getElementById('scoreboard').style.display = 'block';
+        
+        document.documentElement.className += ' score-screen';
     }
 
 }
