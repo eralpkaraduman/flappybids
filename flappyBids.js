@@ -303,10 +303,13 @@ function jump(){
 }
 
 function startGame(){
-    
+    /*
     if(parent.onPlay){
         parent.onPlay();
     }
+    */
+
+    _gag.push(["_trackEvent","flappybids","play"]);
 
     scoreCounter.alpha = 1;
 
