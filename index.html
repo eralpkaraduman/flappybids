@@ -146,7 +146,15 @@ bindBtns();
 
 getScore();
 </script>
-<script type="text/javascript">
+<div id="fb-root"></div>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '492803254134089',
+          status     : true,
+          xfbml      : true
+        });
+      };
+
 (function(d){
          var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
          js = d.createElement('script'); js.id = id; js.async = true;
