@@ -39,6 +39,7 @@ var endGamePullEndTween;
 var endGameCurrentScoreText;
 var endGameCurrentBestScoreText;
 var canClick = true;
+var scoreBoardButton;
 
 var startInfoText;
 
@@ -56,6 +57,7 @@ function preload() {
     game.load.image('click','click_flat.png');
     game.load.image('logo','logo.png');
     game.load.image('endgame','endgame.png');
+    game.load.image('sumbit','submit.png');
     game.load.audio('s_wall', ['wall.mp3', 'wall.ogg']);
     game.load.audio('s_gate', ['gate.mp3', 'gate.ogg']);
     game.load.audio('s_jump', ['jump.mp3', 'jump.ogg']);
@@ -105,8 +107,6 @@ function create() {
     //walls
     gateGroup = game.add.group();
     
-    
-    
     // marvin
     marvin = game.add.sprite(0,0,"marvin_gfx");
     marvin.anchor.setTo(0.5,0.5);
@@ -132,18 +132,18 @@ function create() {
     startInfoText.x = game.width/2;
     startInfoText.y = game.height/2;
 
-    var title_logo = game.add.sprite(gaps/2+45,gaps/2,"logo");
+    var title_logo = game.add.sprite(gaps/2+30,gaps/2,"logo");
     title_logo.anchor.setTo(0.5,0.5);
 
     var titleStyle = { font: "24px Arial", fill: "#686B7A", align: "left" };
-    var title_text = game.add.text(100+45,gaps/2,"FLAPPY BIDS",titleStyle);
+    var title_text = game.add.text(100+10,gaps/2,"FLAPPY BIDS",titleStyle);
     title_text.anchor.setTo(0,0.5);
 
-    var scoreCounterStyle = { font: "42px Arial", fill: "#00CFB5", align: "center" };
+    var scoreCounterStyle = { font: "27px Arial", fill: "#00CFB5", align: "center" };
     scoreCounter = game.add.text(100+45,gaps/2,"0",scoreCounterStyle);
     scoreCounter.x = game.width/2;
     scoreCounter.anchor.setTo(0.5,0.5);
-    scoreCounter.y = 150;
+    scoreCounter.y = 130;
 
     endGameBannerGroup = game.add.group();
     //endGameBannerGroup.anchor.setTo(0.5,0.5);
@@ -154,16 +154,23 @@ function create() {
     endGameBannerGroup.add(endGameBanner);
 
     var endGameScoreTextStyle = { font: "18px Arial", fill: "#00CFB5", align: "center" };
-    endGameCurrentScoreText = game.add.text(0,0,"Current bid: $0.0",endGameScoreTextStyle);
-    endGameCurrentBestScoreText = game.add.text(0,25,"Highest bid: $0.0",endGameScoreTextStyle);
+    endGameCurrentScoreText = game.add.text(0,-30,"Current: $0.0",endGameScoreTextStyle);
+    endGameCurrentBestScoreText = game.add.text(0,-5,"Highest: $0.0",endGameScoreTextStyle);
     endGameCurrentScoreText.anchor.setTo(0.5,0.5);
     endGameCurrentBestScoreText.anchor.setTo(0.5,0.5);
     endGameBannerGroup.add(endGameCurrentScoreText);
     endGameBannerGroup.add(endGameCurrentBestScoreText);
 
+    scoreBoardButton = game.add.button(0, 35, 'sumbit', onClickScoreboard, this, 0, 0, 0);
+    scoreBoardButton.anchor.setTo(0.5,0.5);
+    endGameBannerGroup.add(scoreBoardButton);
 
     resetGame();
 
+}
+
+function onClickScoreboard(){
+    window.location.href = "/scoreboard.html?s=" + scoreStringFromScore(score);
 }
 
 function generateWalls(){
@@ -250,14 +257,17 @@ function setScore(_score){
     }
 
     scoreCounter.setText(scoreStringFromScore(score));
-    endGameCurrentScoreText.setText("Current bid: "+scoreStringFromScore(score));
-    endGameCurrentBestScoreText.setText("Highest bid: "+scoreStringFromScore(bestScore));
+    endGameCurrentScoreText.setText("Current "+scoreStringFromScore(score));
+    endGameCurrentBestScoreText.setText("Highest "+scoreStringFromScore(bestScore));
 }
 
 function scoreStringFromScore(_score){
 
+    //var s = _score+"%";
+    //return s;
+
     var s = _score/10;
-    return "$ "+s+(s%1==0?".0":"");
+    return "ROI: "+s+(s%1==0?".0":"")+"x";
 }
 
 function resetMarvin(){
