@@ -101,21 +101,28 @@
     </div>
 
 <script type="text/javascript">
+window.score = 0;
+window.appUrl = 'http://adphorus.com/flappybids';
+window.tweetText = 'Flappy Bids';
 function getScore() {
     var url = window.location.href;
     if(url.indexOf('?s=') >= 0) {
-        score = url.split('?s=')[1];
+        window.score = url.split('?s=')[1];
+        window.tweetText = "I've scored on " + window.score + "  #flappybids";
         document.getElementById('score').innerHTML = 'Your Score: ' + score;
         document.getElementById('scoreboard').style.display = 'block';
-        
         document.documentElement.className += ' score-screen';
     }
-
 }
 
 function bindBtns() {
     $(document).on('click', '.tw-btn', function() {
-        window.open('https://twitter.com/share?url=https%3A%2F%2Fdev.twitter.com%2Fpages%2Ftweet-button', 'TweetWin', 'outerWidth=600,width=500,innerWidth=400,resizable,scrollbars,status');
+        var w = 640;
+		var h = 480;
+		var left = (screen.width / 2) - (w / 2);
+		var top = (screen.height / 2) - (h / 2);
+        var url = 'https://twitter.com/share?url=' + encodeURIComponent(window.appUrl) + '&' + encodeURIComponent(window.tweetText);
+        window.open(url, 'TweetWin', 'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left);
         return false;
     });
 
@@ -123,12 +130,16 @@ function bindBtns() {
         FB.ui(
           {
             method: 'feed',
+            name: 'Flappy Bids!',
+            link: window.appUrl,
+            description: window.tweetText,
+            caption: window.tweetText
           },
           function(response) {
             if (response && response.post_id) {
-              console.log('Post was published.');
+              //alert('Post was published.');
             } else {
-              console.log('Post was not published.');
+              //alert('Post was not published.');
             }
           }
         );
