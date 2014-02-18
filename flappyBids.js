@@ -309,7 +309,7 @@ function startGame(){
     }
     */
 
-    _gag.push(["_trackEvent","flappybids","play"]);
+    _gaq.push(["_trackEvent","flappybids","play"]);
 
     scoreCounter.alpha = 1;
 
