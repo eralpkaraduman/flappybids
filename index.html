@@ -108,7 +108,7 @@ function getScore() {
     var url = window.location.href;
     if(url.indexOf('?s=') >= 0) {
         window.score = url.split('?s=')[1];
-        window.tweetText = "I've scored on " + window.score;
+        window.tweetText = "I’ve just optimised "+window.score+" on Flappy Bids! Try it yourself http://adphorus.com/flappybids";
         document.getElementById('score').innerHTML = 'Your Score: ' + score;
         document.getElementById('scoreboard').style.display = 'block';
         document.documentElement.className += ' score-screen';
