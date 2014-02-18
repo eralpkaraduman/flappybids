@@ -188,7 +188,7 @@ function onClickTryAgain(){
 }
 
 function onClickScoreboard(){
-    window.location.href = "index.html?s=" + scoreStringFromScore(score);
+    window.location.href = "index.html?s=" + encodeURIComponent(scoreStringFromScore(score));
 }
 
 function generateWalls(){
