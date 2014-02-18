@@ -302,6 +302,10 @@ function jump(){
 
 function startGame(){
     
+    if(parent.onPlay){
+        parent.onPlay();
+    }
+
     scoreCounter.alpha = 1;
 
     startInfoText.alpha = 0;

@@ -117,6 +117,9 @@ function getScore() {
 
 function bindBtns() {
     $(document).on('click', '.tw-btn', function() {
+       
+        shareEvent();
+
         var w = 640;
 		var h = 480;
 		var left = (screen.width / 2) - (w / 2);
@@ -124,9 +127,13 @@ function bindBtns() {
         var url = 'https://twitter.com/share?url=' + encodeURIComponent(window.appUrl) + '&text=' + encodeURIComponent(window.tweetText + ' #flappybids') + '&url=' + encodeURIComponent(window.appUrl);
         window.open(url, 'TweetWin', 'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left);
         return false;
+
     });
 
     $(document).on('click', '.fb-btn', function() {
+        
+        shareEvent();
+
         FB.ui(
           {
             method: 'feed',
@@ -145,6 +152,12 @@ function bindBtns() {
         );
         return false;
     });
+}
+
+function shareEvent(){
+    if(parent.onShare){
+        parent.onShare();
+    }
 }
 
 $(document).ready(function() {
