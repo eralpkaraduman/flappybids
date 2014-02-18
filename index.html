@@ -72,7 +72,8 @@
     padding:24px 10px;
     line-height:20px;
     font-weight:bold;
-    font-size:16px;
+    text-align: center;
+    font-size:22px;
 }
 
     </style>
@@ -80,7 +81,6 @@
     <script src="phaser.min.js"></script>
 
  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-
 
 </head>
 <body>
@@ -109,7 +109,7 @@ function getScore() {
     if(url.indexOf('?s=') >= 0) {
         window.score = decodeURIComponent(url.split('?s=')[1]);
         window.tweetText = "I’ve just optimised "+window.score+" on Flappy Bids! Try it yourself ";
-        document.getElementById('score').innerHTML = 'Your Score: ' + score;
+        document.getElementById('score').innerHTML = 'Score: ' + score;
         document.getElementById('scoreboard').style.display = 'block';
         document.documentElement.className += ' score-screen';
     }
