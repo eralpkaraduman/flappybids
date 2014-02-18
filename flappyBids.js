@@ -41,6 +41,7 @@ var endGameCurrentBestScoreText;
 var canClick = true;
 var scoreBoardButton;
 var tryAgainButton;
+var _lastScore;
 
 var currentScorePrefix = "";
 var bestScorePrefix = "Best ";
@@ -188,7 +189,7 @@ function onClickTryAgain(){
 }
 
 function onClickScoreboard(){
-    window.location.href = "index.html?s=" + encodeURIComponent(scoreStringFromScore(score));
+    window.location.href = "index.html?s=" + encodeURIComponent(scoreStringFromScore(_lastScore));
 }
 
 function generateWalls(){
@@ -259,6 +260,7 @@ function resetGame(){
     generateWalls();
     resetMarvin();
     startInfoText.alpha = 1;
+    _lastScore = score;
     setScore(0);
     scoreCounter.alpha = 0;
 
