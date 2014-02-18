@@ -170,7 +170,7 @@ function create() {
 }
 
 function onClickScoreboard(){
-    window.location.href = "/scoreboard.html?s=" + scoreStringFromScore(score);
+    window.location.href = "index.html?s=" + scoreStringFromScore(score);
 }
 
 function generateWalls(){
