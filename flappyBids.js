@@ -1,12 +1,19 @@
-var game = new Phaser.Game(
-    320 * 1.0,
-    568 * 1.0,
-    Phaser.AUTO,
-    '',
-    { preload: preload,
-      create: create,
-      update: update 
-    });
+var game;
+var canCreateGame = true;
+var url = window.location.href;
+if(url.indexOf('?s=') >= 0)canCreateGame = false;
+if(canCreateGame){
+
+    game = new Phaser.Game(
+        320 * 1.0,
+        568 * 1.0,
+        Phaser.AUTO,
+        '',
+        { preload: preload,
+          create: create,
+          update: update 
+        });
+}
 
 var marvin;
 var chart;
@@ -55,7 +62,7 @@ var sfx_jump;
 var sfx_wall;
 var sfx_gate;
 
-var root = "file://localhost/Users/eralpkaraduman/Documents/FlappyBids"; 
+var jumpButton;
 
 function preload() {
     game.load.image('marvin_gfx','marvin.png');
@@ -79,7 +86,10 @@ function create() {
     sfx_wall = game.add.audio('s_wall');
     sfx_gate = game.add.audio('s_gate');
 
-    game.stage.scale.pageAlignHorizontally = true;
+    jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    jumpButton.onDown.add(onTap, this);
+
+    //game.stage.scale.pageAlignHorizontally = true;
     game.stage.scale.refresh();
 
     downLineGFX = game.add.graphics(0,0);
